@@ -1,0 +1,28 @@
+/* Club Subs — neutral, inherits the site's fonts and colours. Override per site in a style widget. */
+.cs{max-width:560px;margin:0 auto;font-size:17px;line-height:1.5}
+.cs-h{font-size:2rem;margin:0 0 .4em;line-height:1.1}
+.cs-h3{font-size:1.25rem;margin:0 0 .5em}
+.cs-intro{margin:0 0 1.4em;opacity:.8}
+.cs-form{display:flex;flex-direction:column;gap:14px}
+.cs-l{display:block;font-weight:600;font-size:.95rem;margin:0 0 6px}
+.cs-l.cs-small{font-weight:500;opacity:.75;margin-top:10px}
+.cs-fs{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.cs-fs legend{padding:0;margin-bottom:6px}
+.cs-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.cs-row{grid-template-columns:1fr}}
+.cs input[type=text],.cs input[type=email],.cs input[type=tel],.cs input[type=date],.cs select{width:100%;box-sizing:border-box;padding:12px 14px;font:inherit;border:1px solid rgba(0,0,0,.25);border-radius:4px;background:#fff;color:inherit;min-width:0}
+.cs input:focus,.cs select:focus{outline:2px solid currentColor;outline-offset:1px}
+.cs-check{display:flex;gap:10px;align-items:flex-start;font-size:.95rem}
+.cs-check input{margin-top:5px;flex:0 0 auto}
+.cs-note{margin:0;padding:12px 14px;border:1px solid rgba(0,0,0,.15);border-radius:4px;font-size:.95rem}
+.cs-err{margin:0;color:#b3121b;font-size:.95rem}
+.cs-exit{padding:12px 14px;border:1px solid rgba(0,0,0,.15);border-radius:4px}
+.cs-btn{display:inline-block;padding:14px 22px;font:inherit;font-weight:600;border:0;border-radius:4px;background:#101010;color:#fff;cursor:pointer;text-align:left}
+.cs-btn[disabled]{opacity:.5;cursor:default}
+.cs-btn-quiet{background:transparent;color:inherit;border:1px solid rgba(0,0,0,.3);padding:10px 16px;font-weight:500}
+.cs-btn.cs-armed{border-color:#b3121b;color:#b3121b}
+.cs-card{border:1px solid rgba(0,0,0,.15);border-radius:4px;padding:18px;margin:0 0 14px}
+.cs-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0 0 14px}
+.cs-dl dt{opacity:.7}
+.cs-dl dd{margin:0}
+.cs-link{text-decoration:underline}
