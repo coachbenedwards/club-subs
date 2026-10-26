@@ -58,6 +58,11 @@ register_activation_hook( __FILE__, function () {
 	}
 } );
 
+/** Let the Eastwood site's page-layout channel write our blocks as editable widgets. */
+add_filter( 'ew_blocks_allowed', function ( $list ) {
+	return array_merge( (array) $list, array( 'club_subs_signup', 'club_subs_account' ) );
+} );
+
 add_action( 'wp_enqueue_scripts', function () {
 	wp_register_style( 'club-subs', cs_asset_url( 'assets/subs.css' ), array(), null );
 	wp_register_script( 'club-subs', cs_asset_url( 'assets/subs.js' ), array(), null, true );
