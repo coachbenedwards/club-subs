@@ -10,6 +10,7 @@ Money never touches the plugin. Parents set the Direct Debit up on GoCardless' h
 - **Sign-up block** `[club_subs_signup]` — parent picks the team, enters the child and themselves, goes to GoCardless, comes back. The mandate arrives by webhook and the monthly subscription is created for the collections left this season.
 - **Members** — the child, the parent, the plan, status, GoCardless ids. Cancel at GoCardless from the member screen.
 - **This month** — who's paid, due, failed or has nothing, per plan. CSV export. "Refresh from GoCardless" re-reads a month if a webhook was missed.
+- **Chase list** (Subs → Chase list) — read straight from GoCardless, so it covers subscriptions Pitchero set up as well as ours: Direct Debit stopped, payment failed, nothing collected, paid, on its way. Emailed with a spreadsheet to whoever chases — weekly, monthly or on request.
 - **Parent account** `[club_subs_account]` — emailed one-hour link; see each child's plan, status and next collection; cancel.
 - **Import** — pulls every active subscription already in the GoCardless account (the ones Pitchero set up) so a club can leave the other system without parents signing up again. Child names aren't in GoCardless; imported members are titled after the payer for the club to rename.
 - **Emails** — to the club on sign-up, failed payment or cancelled mandate; to the parent on sign-up. From the club's address, never a person's.
