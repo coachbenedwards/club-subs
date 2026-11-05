@@ -163,12 +163,15 @@ function cs_chase_build( $month, $fresh = false ) {
 		$child  = $m ? trim( $m['child_first'] . ' ' . ( '(name the child)' === $m['child_last'] ? '' : $m['child_last'] ) ) : '';
 		$payer  = trim( ( $cust['given_name'] ?? '' ) . ' ' . ( $cust['family_name'] ?? '' ) ) ?: ( $cust['company_name'] ?? '' );
 
+		// Pitchero people registered under the payer's email fill what GoCardless lacks.
+		$known = function_exists( 'cs_people_for_payer' ) ? cs_people_for_payer( $cust['email'] ?? '' ) : array( 'children' => '', 'phone' => '' );
+
 		$rows[] = array(
 			'state'     => $state,
 			'payer'     => $payer,
 			'email'     => $cust['email'] ?? '',
-			'phone'     => $cust['phone_number'] ?? '',
-			'for'       => $child ?: (string) ( $s['name'] ?? '' ),
+			'phone'     => ( $cust['phone_number'] ?? '' ) ?: $known['phone'],
+			'for'       => $child ?: ( $known['children'] ?: (string) ( $s['name'] ?? '' ) ),
 			'team'      => $team,
 			'amount'    => (int) $s['amount'],
 			'day'       => isset( $s['day_of_month'] ) ? (int) $s['day_of_month'] : 0,
