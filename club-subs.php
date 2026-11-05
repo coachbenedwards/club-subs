@@ -50,6 +50,7 @@ require_once CS_DIR . 'includes/account.php';
 require_once CS_DIR . 'includes/import.php';
 require_once CS_DIR . 'includes/notify.php';
 require_once CS_DIR . 'includes/chase.php';
+require_once CS_DIR . 'includes/updates.php';
 
 register_activation_hook( __FILE__, function () {
 	cs_register_post_types();
