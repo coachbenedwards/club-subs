@@ -121,7 +121,7 @@ add_action( 'add_meta_boxes_cs_member', function () {
 				echo '</select>';
 			} elseif ( 'status' === $k ) {
 				echo '<select name="cs[status]" id="cs_status">';
-				foreach ( array( 'pending', 'active', 'cancelled', 'failed' ) as $s ) {
+				foreach ( array( 'pending', 'active', 'cancelled', 'failed', 'squad' ) as $s ) {
 					echo '<option value="' . $s . '"' . selected( $m['status'], $s, false ) . '>' . $s . '</option>';
 				}
 				echo '</select>';

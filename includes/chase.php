@@ -160,11 +160,18 @@ function cs_chase_build( $month, $fresh = false ) {
 		$member = cs_member_by_gc( 'gc_subscription', $sid );
 		$m      = $member ? cs_member( $member ) : array();
 		$team   = ( $m && $m['plan_id'] ) ? get_the_title( (int) $m['plan_id'] ) : '';
-		$child  = $m ? trim( $m['child_first'] . ' ' . ( '(name the child)' === $m['child_last'] ? '' : $m['child_last'] ) ) : '';
+		$child  = ( $m && '(name the child)' !== $m['child_last'] ) ? trim( $m['child_first'] . ' ' . $m['child_last'] ) : '';
 		$payer  = trim( ( $cust['given_name'] ?? '' ) . ' ' . ( $cust['family_name'] ?? '' ) ) ?: ( $cust['company_name'] ?? '' );
 
-		// Pitchero people registered under the payer's email fill what GoCardless lacks.
-		$known = function_exists( 'cs_people_for_payer' ) ? cs_people_for_payer( $cust['email'] ?? '' ) : array( 'children' => '', 'phone' => '' );
+		// Players coaches have listed under the payer's email come first, then Pitchero people.
+		$known = function_exists( 'cs_players_for_payer' ) ? cs_players_for_payer( $cust['email'] ?? '' ) : array( 'children' => '', 'team' => '', 'phone' => '' );
+		if ( '' === $known['children'] && function_exists( 'cs_people_for_payer' ) ) {
+			$known = array_merge( $known, cs_people_for_payer( $cust['email'] ?? '' ) );
+		}
+		if ( '' === $team && $m && ! empty( $m['id'] ) && get_post_meta( $m['id'], '_cs_team_id', true ) ) {
+			$team = get_the_title( (int) get_post_meta( $m['id'], '_cs_team_id', true ) );
+		}
+		$team = $team ?: ( $known['team'] ?? '' );
 
 		$rows[] = array(
 			'state'     => $state,
