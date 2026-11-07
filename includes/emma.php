@@ -3,7 +3,7 @@
  * Read-only routes for the club's assistant agent (Emma on Eastwood).
  * Auth reuses the site's assistant key (ew_emma_ok, X-Emma-Key header) when
  * the Eastwood plugin is present; without it every route answers 401.
- * Nothing here writes to GoCardless or to the members and payments records.
+ * Reads only. Changes go through emma-changes.php, which needs an admin to approve each one.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
