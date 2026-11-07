@@ -1,7 +1,7 @@
 {
   "name": "Club Subs",
   "slug": "club-subs",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "requires_php": "7.4",
   "homepage": "https://github.com/coachbenedwards/club-subs"
 }

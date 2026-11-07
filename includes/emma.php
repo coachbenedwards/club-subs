@@ -22,6 +22,7 @@ add_action( 'rest_api_init', function () {
 		'/emma/month'    => 'cs_emma_month',
 		'/emma/plans'    => 'cs_emma_plans',
 		'/emma/payments' => 'cs_emma_payments',
+		'/emma/gc'       => 'cs_emma_gc_read',
 	);
 	foreach ( $routes as $path => $cb ) {
 		register_rest_route( 'club-subs/v1', $path, array( 'methods' => 'GET', 'permission_callback' => 'cs_emma_ok', 'callback' => $cb ) );
@@ -148,4 +149,23 @@ function cs_emma_payments( WP_REST_Request $r ) {
 		);
 	}
 	return array( 'count' => count( $rows ), 'payments' => $rows );
+}
+
+/**
+ * Any GoCardless read, so the assistant can answer whatever comes up:
+ * payouts, events, refunds, customers, mandates, balances and the rest.
+ * ?path=/payouts&query=status=paid&limit=50 . GET only; nothing here can change anything.
+ */
+function cs_emma_gc_read( WP_REST_Request $r ) {
+	$path = '/' . ltrim( (string) $r->get_param( 'path' ), '/' );
+	if ( ! preg_match( '#^/[a-z_]+(/[A-Za-z0-9_]+)*$#', $path ) ) {
+		return new WP_REST_Response( array( 'error' => 'path must look like /payouts or /payments/PM123' ), 400 );
+	}
+	$q = array();
+	parse_str( (string) $r->get_param( 'query' ), $q );
+	$res = cs_gc( 'GET', $path, null, $q );
+	if ( is_wp_error( $res ) ) {
+		return new WP_REST_Response( array( 'error' => $res->get_error_message() ), 502 );
+	}
+	return $res;
 }

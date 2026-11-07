@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Club Subs
  * Description: Kids' and members' subs collected by Direct Debit through the club's own GoCardless account, from the club's own website. Sign-up block, monthly collection, who's-paid report, parent self-serve, import of existing GoCardless mandates.
- * Version: 0.5.1
+ * Version: 0.5.2
  * Author: Enabled
  * Requires PHP: 7.4
  * Text Domain: club-subs
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CS_VERSION', '0.5.1' );
+define( 'CS_VERSION', '0.5.2' );
 define( 'CS_FILE', __FILE__ );
 define( 'CS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CS_URL', plugin_dir_url( __FILE__ ) );
