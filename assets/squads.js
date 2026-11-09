@@ -65,13 +65,13 @@
   }
 
   function vTeam() {
-    var t = st.teamDraft || st.team || { name: '', age: '', coaches: [] };
+    var t = st.teamDraft || (st.newTeam ? null : st.team) || { name: '', age: '', coaches: [] };
     var coaches = t.coaches.length ? t.coaches : [{ name: '', email: st.me.email, mobile: '' }];
     var ages = '<option value="">' + w('choose') + '</option>' + cfg.ages.map(function (a) { return '<option' + (a === t.age ? ' selected' : '') + '>' + esc(a) + '</option>'; }).join('');
     var rows = coaches.map(function (c, i) {
       return '<div class="cs-sq-coach"><div>' + field('cn' + i, w('coach_name'), 'text', c.name) + '</div><div>' + field('ce' + i, w('coach_email'), 'email', c.email) + '</div><div>' + field('cm' + i, w('coach_mobile'), 'tel', c.mobile) + '</div></div>';
     }).join('');
-    return hero(w('team_title'), '', '') +
+    return hero(st.newTeam ? w('new_team_title') : w('team_title'), '', '') +
       '<div class="cs-sq-in cs-sq-main">' + who() +
       '<form data-f="team" class="cs-sq-stack" novalidate>' +
       '<div class="cs-sq-card"><h2 class="cs-sq-h2">' + w('team_box') + '</h2><div class="cs-sq-two"><div>' + field('tn', w('team_name'), 'text', t.name) + '</div><div><label class="cs-sq-l" for="ta">' + w('age_group') + '</label><select class="cs-sq-i" id="ta">' + ages + '</select></div></div></div>' +
@@ -79,7 +79,7 @@
       '<button type="button" class="cs-sq-add" data-a="coach">' + plus + w('add_coach') + '</button></div>' +
       (st.err ? '<p class="cs-sq-err" role="alert">' + esc(st.err) + '</p>' : '') +
       '<div class="cs-sq-actions">' + (st.team ? '<button type="button" class="cs-sq-btn cs-sq-quiet" data-a="cancel-team">' + back + w('back') + '</button>' : '<span></span>') +
-      '<button class="cs-sq-btn" type="submit">' + (st.team ? w('team_save') : w('team_next')) + '</button></div></form></div>';
+      '<button class="cs-sq-btn" type="submit">' + (st.team && !st.newTeam ? w('team_save') : w('team_next')) + '</button></div></form></div>';
   }
 
   function playerForm() {
@@ -97,6 +97,15 @@
       '</form>';
   }
 
+  function teamsBox() {
+    var teams = (st.me && st.me.teams) || [];
+    var others = teams.filter(function (x) { return x.id !== st.team.id; }).map(function (x) {
+      return '<button type="button" class="cs-sq-row" data-a="pick" data-id="' + x.id + '"><span class="cs-sq-name">' + esc(x.name) + '</span><span class="cs-sq-sub">' + esc(x.age || '') + '</span>' + chev + '</button>';
+    }).join('');
+    return '<div class="cs-sq-teams">' + (others ? '<h2 class="cs-sq-h2">' + w('other_teams') + '</h2>' + others : '') +
+      '<button type="button" class="cs-sq-add" data-a="newteam">' + plus + w('add_team') + '</button></div>';
+  }
+
   function vPlayers() {
     var t = st.team, n = t.players.length;
     var list = t.players.map(function (p) {
@@ -111,7 +120,7 @@
       '<div class="cs-sq-grid' + (st.adding ? ' cs-sq-adding' : '') + '"><div class="cs-sq-list">' +
       '<div class="cs-sq-listhead"><h2 class="cs-sq-h2">' + w('squad_box') + '</h2><span class="cs-sq-count">' + (n === 1 ? w('count_one') : w('count', { n: n })) + '</span></div>' +
       (n ? list + '<p class="cs-sq-hint">' + w('tap_hint') + '</p>' : '<p class="cs-sq-empty">' + w('empty') + '</p>') +
-      '<button type="button" class="cs-sq-link cs-sq-editteam" data-a="team">' + w('edit_team') + '</button></div>' +
+      '<button type="button" class="cs-sq-link cs-sq-editteam" data-a="team">' + w('edit_team') + '</button>' + teamsBox() + '</div>' +
       playerForm() + '</div></div>';
   }
 
@@ -138,8 +147,10 @@
     if (a !== 'remove') st.armed = 0;
     if (a === 'out') { (sb ? sb.auth.signOut() : Promise.resolve()).then(function () { return api('out', {}); }).catch(function () {}).then(function () { st = { view: 'signin', err: '', sent: false }; render(); }); return; }
     if (a === 'coach') { var d = readTeam(); if (!d.coaches.length) d.coaches.push({ name: '', email: st.me.email, mobile: '' }); d.coaches.push({ name: '', email: '', mobile: '' }); st.teamDraft = d; render(); return; }
-    if (a === 'team') { st.err = ''; st.flash = ''; st.teamDraft = null; st.view = 'team'; render(); return; }
-    if (a === 'cancel-team') { st.err = ''; st.teamDraft = null; st.view = 'players'; render(); return; }
+    if (a === 'team') { st.err = ''; st.flash = ''; st.teamDraft = null; st.newTeam = false; st.view = 'team'; render(); return; }
+    if (a === 'newteam') { st.err = ''; st.flash = ''; st.teamDraft = null; st.newTeam = true; st.adding = false; st.edit = null; st.view = 'team'; render(); window.scrollTo(0, 0); return; }
+    if (a === 'pick') { var tid = +b.getAttribute('data-id'); st.team = st.me.teams.filter(function (x) { return x.id === tid; })[0] || st.team; st.adding = false; st.edit = null; st.flash = ''; st.err = ''; st.justAdded = 0; render(); window.scrollTo(0, 0); return; }
+    if (a === 'cancel-team') { st.err = ''; st.teamDraft = null; st.newTeam = false; st.view = 'players'; render(); return; }
     if (a === 'new') { st.edit = null; st.err = ''; st.adding = true; st.flash = ''; render(); focusFirst(); return; }
     if (a === 'close') { st.edit = null; st.err = ''; st.adding = false; render(); return; }
     if (a === 'open') { var id = +b.getAttribute('data-id'); st.edit = st.team.players.filter(function (p) { return p.id === id; })[0]; st.err = ''; st.adding = true; st.flash = ''; render(); return; }
@@ -188,8 +199,13 @@
     }
     if (f === 'team') {
       var d = readTeam();
-      api('team', { id: st.team && st.team.id ? st.team.id : 0, name: d.name, age: d.age, coaches: d.coaches })
-        .then(function (t) { st.team = t; st.teamDraft = null; st.err = ''; st.view = 'players'; st.flash = ''; render(); })
+      api('team', { id: st.team && st.team.id && !st.newTeam ? st.team.id : 0, name: d.name, age: d.age, coaches: d.coaches })
+        .then(function (t) {
+          var teams = st.me.teams = st.me.teams || [], at = -1;
+          teams.forEach(function (x, k) { if (x.id === t.id) at = k; });
+          if (at >= 0) teams[at] = t; else teams.push(t);
+          st.team = t; st.newTeam = false; st.teamDraft = null; st.err = ''; st.view = 'players'; st.flash = ''; render();
+        })
         .catch(function (x) { st.teamDraft = d; st.err = x.message === 'error' ? W.error : x.message; render(); });
     }
     if (f === 'player') {
